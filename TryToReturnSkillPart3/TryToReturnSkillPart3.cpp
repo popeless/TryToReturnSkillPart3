@@ -1,20 +1,94 @@
-// TryToReturnSkillPart3.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
+#include <string>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <sstream>
+
+class Lexem {
+
+public:
+
+    Lexem() {
+        this->word = "";
+        this->count = 0;
+    }
+
+    Lexem(std::string word) {
+        this->word = word;
+        this->count = 1;
+    }
+
+    void addCount() {
+        ++this->count;
+    }
+
+    std::string getWord() {
+        return word;
+    }
+
+    std::string getContent() {
+        std::stringstream ss;
+        ss << count;
+        return word + " counts " + ss.str() + " times\n";
+    }
+
+    bool operator< (const Lexem& other) const {
+        if (this->word < other.word) {
+            return true;
+        }
+        return false;
+    }
+
+private:
+    std::string word;
+    int count;
+};
+
+void check_repeat_string_file() {
+    std::ifstream fin;
+    std::ofstream fon;
+    std::vector<Lexem> vecLex;
+
+    fin.open("input.txt");
+    if (fin.is_open()) {
+        std::string a;
+        while (fin >> a) {
+            auto iter = vecLex.begin();
+            int count = 0;
+            while (iter != vecLex.end())
+            {
+                Lexem& lex = *iter;
+                if (lex.getWord() == a) {
+                   lex.addCount();
+                    break;
+                }
+                ++iter;
+            }
+            if (iter == vecLex.end()) {
+                vecLex.push_back(a);
+            }
+        }
+        std::sort(vecLex.begin(), vecLex.end(), [](const Lexem& a, const Lexem& b) {
+            return a < b; });
+        fin.close();
+    }
+
+    fon.open("output.txt");
+    if (fon.is_open()) {
+        auto iter = vecLex.begin();
+        while (iter != vecLex.end()) {
+            Lexem lex = *iter;
+            fon << lex.getContent();
+            ++iter;
+        }
+        fon.close();
+    }
+}
+
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    check_repeat_string_file();
+    return 0;
 }
-
-// Run program: Ctrl + F5 or Debug > Start Without Debugging menu
-// Debug program: F5 or Debug > Start Debugging menu
-
-// Tips for Getting Started: 
-//   1. Use the Solution Explorer window to add/manage files
-//   2. Use the Team Explorer window to connect to source control
-//   3. Use the Output window to see build output and other messages
-//   4. Use the Error List window to view errors
-//   5. Go to Project > Add New Item to create new code files, or Project > Add Existing Item to add existing code files to the project
-//   6. In the future, to open this project again, go to File > Open > Project and select the .sln file
