@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /TryToReturnSkillPart3/input.txt
+/TryToReturnSkillPart3/output.txt
+/enc_temp_folder/6e943c351e901caf9cad389ca2f272

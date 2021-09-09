@@ -34,10 +34,15 @@ public:
     }
 
     bool operator< (const Lexem& other) const {
-        if (this->word < other.word) {
-            return true;
-        }
-        return false;
+        return this->word < other.word;
+    }
+
+    bool operator> (const Lexem& other) const {
+        return this->word > other.word;
+    }
+
+    bool operator== (const Lexem& other) const {
+        return this->word == other.word;
     }
 
 private:
@@ -53,33 +58,25 @@ void check_repeat_string_file() {
     fin.open("input.txt");
     if (fin.is_open()) {
         std::string a;
+        auto iter = vecLex.begin();
         while (fin >> a) {
-            auto iter = vecLex.begin();
-            int count = 0;
-            while (iter != vecLex.end())
-            {
-                Lexem& lex = *iter;
-                if (lex.getWord() == a) {
-                   lex.addCount();
-                    break;
-                }
-                ++iter;
-            }
+            iter = std::find(vecLex.begin(), vecLex.end(), a);
             if (iter == vecLex.end()) {
                 vecLex.push_back(a);
             }
+            else {
+                iter->addCount();
+            }
         }
-        std::sort(vecLex.begin(), vecLex.end(), [](const Lexem& a, const Lexem& b) {
-            return a < b; });
         fin.close();
     }
+    std::sort(vecLex.begin(), vecLex.end());
 
     fon.open("output.txt");
     if (fon.is_open()) {
         auto iter = vecLex.begin();
         while (iter != vecLex.end()) {
-            Lexem lex = *iter;
-            fon << lex.getContent();
+            fon << iter->getContent();
             ++iter;
         }
         fon.close();
