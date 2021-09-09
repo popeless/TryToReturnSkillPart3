@@ -37,6 +37,10 @@ public:
         return this->word < other.word;
     }
 
+    bool operator< (const std::string& other) const {
+        return this->word < other;
+    }
+
     bool operator> (const Lexem& other) const {
         return this->word > other.word;
     }
@@ -58,19 +62,21 @@ void check_repeat_string_file() {
     fin.open("input.txt");
     if (fin.is_open()) {
         std::string a;
-        auto iter = vecLex.begin();
         while (fin >> a) {
-            iter = std::find(vecLex.begin(), vecLex.end(), a);
-            if (iter == vecLex.end()) {
-                vecLex.push_back(a);
+            auto it = std::lower_bound(
+                vecLex.begin(),
+                vecLex.end(),
+                a,
+                [](const Lexem& l, const std::string& r) { return l < r; });
+            if (it != vecLex.end() && *it == a) {
+                it->addCount();
             }
             else {
-                iter->addCount();
+                vecLex.insert(it, a);
             }
         }
         fin.close();
     }
-    std::sort(vecLex.begin(), vecLex.end());
 
     fon.open("output.txt");
     if (fon.is_open()) {
